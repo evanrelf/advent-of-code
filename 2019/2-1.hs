@@ -1,58 +1,63 @@
-{-# LANGUAGE LambdaCase #-}
+import Control.Monad.ST (ST, runST)
+import Data.STRef (STRef, modifySTRef, newSTRef, readSTRef)
 
-import Prelude hiding (fail)
+type MemoryRef s = STRef s [Int]
 
-import Control.Applicative (Alternative(..))
-import Control.Monad (MonadPlus(..))
-import Control.Monad.Fail (MonadFail(..))
+type PositionRef s = STRef s Int
 
-data Operation
-  = Add Int Int Int
-  | Multiply Int Int Int
-  | Halt
-  deriving Show
+type Context s = (MemoryRef s, PositionRef s)
 
-newtype Parser a = Parser { runParser :: [Int] -> Either String ([Int], a) }
-
-instance Functor Parser where
-  fmap f (Parser p) = Parser (fmap (fmap f) . p)
-
-instance Applicative Parser where
-  pure x = Parser (const (Right ([], x)))
-  Parser f <*> Parser p = undefined
-
-instance Monad Parser where
-  return = pure
-  Parser p >>= f = undefined
-
-instance Alternative Parser where
-  Parser l <|> Parser r = undefined
-  empty = Parser (const (Left ""))
-
-instance MonadPlus Parser where
-  mzero = empty
-  mplus = (<|>)
-
-instance MonadFail Parser where
-  fail err = Parser (const (Left err))
-
-int :: Parser Int
-int = Parser (\case
-  [] -> Left "Empty list"
-  (x:xs) -> Right (xs, x))
-
-operation :: Parser Operation
-operation = int >>= \case
-  1 -> Add <$> int <*> int <*> int
-  2 -> Multiply <$> int <*> int <*> int
-  99 -> pure Halt
-  invalid -> fail ("Invalid operation: " <> show invalid)
+modifyAt :: Int -> (a -> a) -> [a] -> [a]
+modifyAt i f xs = take i xs <> [f (xs !! i)] <> drop (i + 1) xs
 
 parseInput :: String -> [Int]
 parseInput input = read ("[" <> input <> "]")
 
+get :: MemoryRef s -> Int -> ST s Int
+get ref index = (!! index) <$> readSTRef ref
+
+put :: MemoryRef s -> Int -> Int -> ST s ()
+put ref index value = modifySTRef ref (modifyAt index (const value))
+
+step :: PositionRef s -> ST s ()
+step positionRef = modifySTRef positionRef (+ 4)
+
+runOperation :: MemoryRef s -> Int -> (Int -> Int -> Int) -> ST s ()
+runOperation memoryRef position fn = do
+  x <- get memoryRef =<< get memoryRef (position + 1)
+  y <- get memoryRef =<< get memoryRef (position + 2)
+  out <- get memoryRef (position + 3)
+  put memoryRef out (fn x y)
+
+run :: Context s -> ST s Int
+run context@(memoryRef, positionRef) = do
+  position <- readSTRef positionRef
+  operation <- get memoryRef position
+  case operation of
+    1 -> do
+      -- Add
+      runOperation memoryRef position (+)
+      step positionRef
+      run context
+    2 -> do
+      -- Multiply
+      runOperation memoryRef position (*)
+      step positionRef
+      run context
+    99 ->
+      -- Halt
+      get memoryRef 0
+    invalid ->
+      error ("Invalid operation " <> show invalid <> " at position " <> show position)
+
 solve :: [Int] -> Int
-solve = undefined
+solve xs = runST $ do
+  memoryRef <- newSTRef xs
+  positionRef <- newSTRef 0
+  let context = (memoryRef, positionRef)
+  put memoryRef 1 12
+  put memoryRef 2 2
+  run context
 
 main :: IO ()
 main = print . solve . parseInput =<< getContents
