@@ -1,3 +1,6 @@
+#!/usr/bin/env nix-shell
+#!nix-shell --pure --packages ghc -i runghc
+
 import Control.Monad (guard)
 import Data.List (nub)
 import Data.Maybe (catMaybes)

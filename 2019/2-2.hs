@@ -1,3 +1,6 @@
+#!/usr/bin/env nix-shell
+#!nix-shell --pure --packages ghc -i runghc
+
 import Control.Monad (guard)
 import Control.Monad.ST (ST, runST)
 import Data.STRef (STRef, modifySTRef, newSTRef, readSTRef)

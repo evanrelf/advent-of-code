@@ -4,8 +4,10 @@
 
 ## Running
 
+With [Nix](https://nixos.org/nix) installed, just run the file like so:
+
 ```text
-runghc 2018/1.hs
+./2018/1.hs < input.txt
 ```
 
 ## Disclaimer

@@ -1,3 +1,6 @@
+#!/usr/bin/env nix-shell
+#!nix-shell --pure --packages ghc -i runghc
+
 count :: (a -> Bool) -> [a] -> Int
 count pred = foldl (\acc x -> if pred x then acc + 1 else acc) 0
 

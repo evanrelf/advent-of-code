@@ -1,3 +1,6 @@
+#!/usr/bin/env nix-shell
+#!nix-shell --pure --packages ghc -i runghc
+
 {-# LANGUAGE TypeApplications #-}
 
 calculateFuel :: Int -> Int
