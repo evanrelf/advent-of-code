@@ -6,7 +6,7 @@
 
 
 import Data.Bifunctor (bimap)
-import Data.List (union)
+import Data.List (delete, intersect, nub)
 
 
 both :: (a -> b) -> (a, a) -> (b, b)
@@ -40,11 +40,11 @@ parseMovement (direction : distance) = read ([direction] <> " " <> distance)
 
 
 splitOn :: Eq a => a -> [a] -> [[a]]
-splitOn delimiter = reverse . snd . foldl f ([], []) where
-  f (y, ys) x =
+splitOn delimiter = reverse . (\(xs, xss) -> reverse xs : xss) . foldl f ([], []) where
+  f (xs, xss) x =
     if x == delimiter
-      then ([], reverse y : ys)
-      else (x : y, ys)
+      then ([], reverse xs : xss)
+      else (x : xs, xss)
 
 
 parse :: String -> ([Movement], [Movement])
@@ -71,19 +71,20 @@ movementsToVertices = scanl move (0, 0)
 
 interpolate :: Point -> Point -> [Point]
 interpolate (x1, y1) (x2, y2) = do
-  x <- [x1 .. x2]
-  y <- [y1 .. y2]
+  x <- if x1 < x2 then [x1 .. x2] else [x2 .. x1]
+  y <- if y1 < y2 then [y1 .. y2] else [y2 .. y1]
   pure (x, y)
 
 
 verticesToLine :: [Point] -> [Point]
 verticesToLine [] = []
 verticesToLine [p1] = [p1]
-verticesToLine (p1 : p2 : ps) = interpolate p1 p2 <> verticesToLine (p2 : ps)
+verticesToLine (p1 : p2 : ps) =
+  nub (interpolate p1 p2 <> verticesToLine (p2 : ps))
 
 
 findIntersections :: [Point] -> [Point] -> [Point]
-findIntersections = union
+findIntersections xs ys = delete (0, 0) (intersect (nub xs) (nub ys))
 
 
 findClosestDistance :: [Point] -> Int
