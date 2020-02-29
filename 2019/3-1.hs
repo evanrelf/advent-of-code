@@ -3,10 +3,12 @@
 
 
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE MultiWayIf #-}
 
 
+import Control.Category ((>>>))
 import Data.Bifunctor (bimap)
-import Data.List (delete, intersect, nub)
+import Data.Maybe (catMaybes)
 
 
 both :: (a -> b) -> (a, a) -> (b, b)
@@ -18,9 +20,6 @@ both f = bimap f f
 --------------------------------------------------------------------------------
 
 
-type Point = (Int, Int)
-
-
 data Movement
   = U Int
   | D Int
@@ -29,27 +28,45 @@ data Movement
   deriving (Show, Read)
 
 
+type Point = (Int, Int)
+
+
+type LineSegment = (Point, Point)
+
+
+data Orientation
+  = Clockwise
+  | Counterclockwise
+  | Collinear
+  deriving Show
+
+
 --------------------------------------------------------------------------------
 -- Parsing
 --------------------------------------------------------------------------------
 
 
 parseMovement :: String -> Movement
-parseMovement [] = error "Can't parse movement from empty string"
+parseMovement [] = error "parseMovement doesn't work with an empty string"
 parseMovement (direction : distance) = read ([direction] <> " " <> distance)
 
 
 splitOn :: Eq a => a -> [a] -> [[a]]
-splitOn delimiter = reverse . (\(xs, xss) -> reverse xs : xss) . foldl f ([], []) where
-  f (xs, xss) x =
-    if x == delimiter
-      then ([], reverse xs : xss)
-      else (x : xs, xss)
+splitOn delimiter
+  = reverse
+  . (\(xs, xss) -> reverse xs : xss)
+  . foldl f ([], [])
+  where
+    f (xs, xss) x =
+      if x == delimiter
+        then ([], reverse xs : xss)
+        else (x : xs, xss)
 
 
 parse :: String -> ([Movement], [Movement])
-parse = (\case (p1 : p2 : _) -> both f (p1, p2); _ -> error "Not 2 lines") . lines where
-  f = fmap parseMovement . splitOn ','
+parse = lines >>> \case
+  (l1 : l2 : []) -> both (fmap parseMovement . splitOn ',') (l1, l2)
+  _ -> error "parse expects 2 lines"
 
 
 --------------------------------------------------------------------------------
@@ -69,33 +86,47 @@ movementsToVertices :: [Movement] -> [Point]
 movementsToVertices = scanl move (0, 0)
 
 
-interpolate :: Point -> Point -> [Point]
-interpolate (x1, y1) (x2, y2) = do
-  x <- if x1 < x2 then [x1 .. x2] else [x2 .. x1]
-  y <- if y1 < y2 then [y1 .. y2] else [y2 .. y1]
-  pure (x, y)
+verticesToLineSegments :: [Point] -> [LineSegment]
+verticesToLineSegments (v1 : v2 : vs) =
+  (v1, v2) : verticesToLineSegments (v2 : vs)
+verticesToLineSegments _ = []
 
 
-verticesToLine :: [Point] -> [Point]
-verticesToLine [] = []
-verticesToLine [p1] = [p1]
-verticesToLine (p1 : p2 : ps) =
-  nub (interpolate p1 p2 <> verticesToLine (p2 : ps))
+pointOnLineSegment :: LineSegment -> Point -> Bool
+pointOnLineSegment ((px, py), (qx, qy)) (rx, ry) =
+  if px /= qx && py /= qy then
+    error "pointOnLineSegment doesn't work with diagonal line segments"
+  else
+    and
+      [ rx >= min px qx
+      , rx <= max px qx
+      , ry >= min py qy
+      , ry <= max py qy
+      ]
 
 
-findIntersections :: [Point] -> [Point] -> [Point]
-findIntersections xs ys = delete (0, 0) (intersect (nub xs) (nub ys))
+intersection :: LineSegment -> LineSegment -> Maybe Point
+intersection l1 l2 | l1 == l2 =
+  error "intersection doesn't work with identical lines"
+intersection (p1, q1) (p2, q2) = undefined
 
 
-findClosestDistance :: [Point] -> Int
-findClosestDistance = minimum . fmap (uncurry (+) . both abs)
+intersections :: [LineSegment] -> [LineSegment] -> [Point]
+intersections [] _ = []
+intersections _ [] = []
+intersections l1s l2s = catMaybes [intersection l1 l2 | l1 <- l1s, l2 <- l2s]
+
+
+closest :: [Point] -> Int
+closest = minimum . fmap (\(x, y) -> abs x + abs y)
 
 
 solve :: ([Movement], [Movement]) -> Int
-solve = findClosestDistance
-      . uncurry findIntersections
-      . both verticesToLine
-      . both movementsToVertices
+solve
+  = closest
+  . uncurry intersections
+  . both verticesToLineSegments
+  . both movementsToVertices
 
 
 --------------------------------------------------------------------------------
