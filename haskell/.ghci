@@ -1,9 +1,0 @@
-:set -Wall
-:set -Wcompat
-:set -Widentities
-:set -Wredundant-constraints
-:set -Wpartial-fields
-:set -Werror=incomplete-record-updates
-:set -Werror=incomplete-uni-patterns
-:set -Werror=missing-fields
-:set -fshow-warning-groups
