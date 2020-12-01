@@ -4,6 +4,11 @@ name:    advent-of-code
 version: 0.0.0.0
 
 
+--------------------------------------------------------------------------------
+-- Common
+--------------------------------------------------------------------------------
+
+
 common common
   build-depends:
     , base   ^>= 4.13.0
@@ -39,7 +44,24 @@ common common
     -with-rtsopts=-N
 
 
+common streamly-optimizations
+  ghc-options:
+    -O2
+    -fdicts-strict
+    -fmax-worker-args=16
+    -fspec-constr-recursive=16
+
+
+common splint
+  build-depends: splint
+  ghc-options: -fplugin=Splint
+
+
 common kitchen-sink
+  import:
+    , common
+    , streamly-optimizations
+    , splint
   build-depends:
     , array
     , async
@@ -58,26 +80,11 @@ common kitchen-sink
     , vector
 
 
-common streamly-optimizations
-  ghc-options:
-    -O2
-    -fdicts-strict
-    -fmax-worker-args=16
-    -fspec-constr-recursive=16
-
-
-common splint
-  build-depends: splint
-  ghc-options: -fplugin=Splint
+--------------------------------------------------------------------------------
+-- Executables
+--------------------------------------------------------------------------------
 
 
 executable 1-1
-  import:
-    , common
-    , kitchen-sink
-    , streamly-optimizations
-    , splint
-  main-is: 1-1.hs
-  build-depends:
-    , streamly
-    , text
+  import: kitchen-sink
+  main-is: src/1-1.hs
