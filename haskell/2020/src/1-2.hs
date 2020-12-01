@@ -18,10 +18,10 @@ main =
     Nothing ->
       putStrLn "Couldn't find solution"
 
-    Just (toInteger -> x, toInteger -> y) ->
+    Just (toInteger -> x, toInteger -> y, toInteger -> z) ->
       putStrLn [__i|
-        Found match: #{x} + #{y} = #{x + y}
-        Solution:    #{x} * #{y} = #{x * y}
+        Found match: #{x} + #{y} + #{z} = #{x + y + z}
+        Solution:    #{x} * #{y} * #{z} = #{x * y * z}
       |]
 
 
@@ -34,10 +34,11 @@ readEntries
   & fmap sort
 
 
-bruteForce :: [Word16] -> IO (Maybe (Word16, Word16))
+bruteForce :: [Word16] -> IO (Maybe (Word16, Word16, Word16))
 bruteForce entries
   = Streamly.serially do
       x <- Streamly.fromList entries
       y <- Streamly.fromList entries
-      Streamly.yield (x, y)
-  & Streamly.find (\(x, y) -> x + y == 2020)
+      z <- Streamly.fromList entries
+      Streamly.yield (x, y, z)
+  & Streamly.find (\(x, y, z) -> x + y + z == 2020)

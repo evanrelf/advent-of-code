@@ -88,3 +88,8 @@ common kitchen-sink
 executable 1-1
   import: kitchen-sink
   main-is: src/1-1.hs
+
+
+executable 1-2
+  import: kitchen-sink
+  main-is: src/1-2.hs
