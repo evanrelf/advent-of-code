@@ -93,3 +93,8 @@ executable 1-1
 executable 1-2
   import: kitchen-sink
   main-is: src/1-2.hs
+
+
+executable 2-1
+  import: kitchen-sink
+  main-is: src/2-1.hs
