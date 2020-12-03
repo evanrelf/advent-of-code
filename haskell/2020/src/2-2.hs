@@ -1,16 +1,11 @@
 {-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE TypeApplications #-}
 
 module Main (main) where
 
-import Control.Exception (throwIO)
 import Relude.Unsafe (read, (!!))
 
-import qualified Data.Text.IO as Text.IO
-import qualified Streamly
-import qualified Streamly.Prelude as Streamly
-import qualified Text.Megaparsec as Megaparsec
-import qualified Text.Megaparsec.Char as Megaparsec
+import qualified Data.String as String
+import qualified System.IO as IO
 
 
 data Policy = Policy
@@ -20,20 +15,15 @@ data Policy = Policy
   }
 
 
-parse :: Text -> IO (Policy, String)
-parse input = either throwIO pure $ Megaparsec.parse @Void parser "" input
-  where
-  parser = do
-    beginning <- read <$> some Megaparsec.digitChar
-    _ <- Megaparsec.char '-'
-    ending <- read <$> some Megaparsec.digitChar
-    Megaparsec.space1
-    letter <- Megaparsec.asciiChar
-    _ <- Megaparsec.char ':'
-    Megaparsec.space1
-    password <- some Megaparsec.asciiChar
-
-    pure (Policy{beginning, ending, letter}, password)
+parse :: String -> (Policy, String)
+parse input =
+  let
+    beginning = read . takeWhile (/= '-') $ input
+    ending = read . takeWhile (/= ' ') . drop 1 . dropWhile (/= '-') $ input
+    letter = (!! 1) . dropWhile (/= ' ') $ input
+    password = reverse . takeWhile (/= ' ') . reverse $ input
+  in
+    (Policy{beginning, ending, letter}, password)
 
 
 isValid :: (Policy, String) -> Bool
@@ -47,13 +37,11 @@ isValid (Policy{beginning, ending, letter}, password) =
 
 main :: IO ()
 main = do
-  input <- Text.IO.getContents
+  input <- IO.getContents
 
-  count <-
-    Streamly.fromList (lines input)
-      & Streamly.serially
-      & Streamly.mapM parse
-      & Streamly.filter isValid
-      & Streamly.length
-
-  print count
+  input
+    & String.lines
+    & fmap parse
+    & filter isValid
+    & length
+    & print

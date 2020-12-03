@@ -15,7 +15,11 @@ common common
     , relude ^>= 0.7.0
   mixins:
     , base hiding (Prelude)
-    , relude (Relude as Prelude, Relude.Unsafe)
+    , relude
+        ( Relude as Prelude
+        , Relude.Extra.Bifunctor
+        , Relude.Unsafe
+        )
   default-language: Haskell2010
   default-extensions:
     , BlockArguments

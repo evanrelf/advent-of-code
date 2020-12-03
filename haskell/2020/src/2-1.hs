@@ -1,45 +1,36 @@
 {-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE TypeApplications #-}
 
 module Main (main) where
 
-import Control.Exception (throwIO)
 import Data.Map.Strict (Map)
-import Relude.Unsafe (read)
-import Prelude hiding (Map)
+import Relude.Extra.Bifunctor (secondF)
+import Relude.Unsafe (head, read)
+import Prelude hiding (Map, head)
 
 import qualified Data.Map.Strict as Map
-import qualified Data.Text.IO as Text.IO
-import qualified Streamly
-import qualified Streamly.Prelude as Streamly
-import qualified Text.Megaparsec as Megaparsec
-import qualified Text.Megaparsec.Char as Megaparsec
+import qualified Data.String as String
+import qualified System.IO as IO
 
 
 data Policy = Policy
-  { letter :: Char
-  , minimum :: Natural
+  { minimum :: Natural
   , maximum :: Natural
-  }
+  , letter :: Char
+  } deriving Show
 
 
 type Password = Map Char Natural
 
 
-parse :: Text -> IO (Policy, String)
-parse input = either throwIO pure $ Megaparsec.parse @Void parser "" input
-  where
-  parser = do
-    minimum <- read <$> some Megaparsec.digitChar
-    _ <- Megaparsec.char '-'
-    maximum <- read <$> some Megaparsec.digitChar
-    Megaparsec.space1
-    letter <- Megaparsec.asciiChar
-    _ <- Megaparsec.char ':'
-    Megaparsec.space1
-    password <- some Megaparsec.asciiChar
-
-    pure (Policy{letter, minimum, maximum}, password)
+parse :: String -> (Policy, String)
+parse input =
+  let
+    minimum = read . takeWhile (/= '-') $ input
+    maximum = read . takeWhile (/= ' ') . drop 1 . dropWhile (/= '-') $ input
+    letter = head . drop 1 . dropWhile (/= ' ') $ input
+    password = reverse . takeWhile (/= ' ') . reverse $ input
+  in
+    (Policy{minimum, maximum, letter}, password)
 
 
 countLetters :: String -> Password
@@ -58,14 +49,12 @@ isValid (Policy{letter, minimum, maximum}, password) =
 
 main :: IO ()
 main = do
-  input <- Text.IO.getContents
+  input <- IO.getContents
 
-  count <-
-    Streamly.fromList (lines input)
-      & Streamly.serially
-      & Streamly.mapM parse
-      & Streamly.map (second countLetters)
-      & Streamly.filter isValid
-      & Streamly.length
-
-  print count
+  input
+    & String.lines
+    & fmap parse
+    & secondF countLetters
+    & filter isValid
+    & length
+    & print
