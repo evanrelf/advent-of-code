@@ -112,3 +112,8 @@ executable 2-2
 executable 3-1
   import: kitchen-sink
   main-is: src/3-1.hs
+
+
+executable 3-2
+  import: kitchen-sink
+  main-is: src/3-2.hs
