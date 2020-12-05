@@ -72,6 +72,8 @@ common kitchen-sink
     , bytestring
     , containers
     , deepseq
+    , generic-lens
+    , lens
     , megaparsec
     , mtl
     , primitive
@@ -127,3 +129,8 @@ executable 4-1
 executable 4-2
   import: kitchen-sink
   main-is: src/4-2.hs
+
+
+executable 5-1
+  import: kitchen-sink
+  main-is: src/5-1.hs
