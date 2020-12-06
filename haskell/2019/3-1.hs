@@ -1,7 +1,3 @@
-#!/usr/bin/env nix-shell
-#!nix-shell --pure --packages ghc -i runghc
-
-
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiWayIf #-}
 
