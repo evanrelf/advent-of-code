@@ -144,3 +144,8 @@ executable 5-2
 executable 6-1
   import: kitchen-sink
   main-is: src/6-1.hs
+
+
+executable 6-2
+  import: kitchen-sink
+  main-is: src/6-2.hs
