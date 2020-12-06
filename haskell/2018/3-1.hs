@@ -1,9 +1,11 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-import Prelude hiding (id)
+module Main (main) where
 
 import Data.Function ((&))
 import Text.ParserCombinators.ReadP (char, munch1, readP_to_S, string)
+import Prelude hiding (id)
+
 
 data Claim = Claim
   { _id :: Int
@@ -13,7 +15,9 @@ data Claim = Claim
   , _height :: Int
   } deriving Show
 
+
 type Fabric = [[Int]]
+
 
 parseClaim :: String -> Claim
 parseClaim = fst . head . readP_to_S
@@ -25,17 +29,22 @@ parseClaim = fst . head . readP_to_S
     <*> (char 'x' *> int))
   where int = read <$> munch1 (`elem` ['0'..'9'])
 
+
 parse :: String -> [Claim]
 parse = fmap parseClaim . lines
+
 
 modifyAt :: (a -> a) -> Int -> [a] -> [a]
 modifyAt f i xs = take i xs <> [f (xs !! i)] <> drop (i + 1) xs
 
+
 modifyAt2d :: (a -> a) -> Int -> Int -> [[a]] -> [[a]]
 modifyAt2d f x y = modifyAt (modifyAt f x) y {- HLINT ignore "Eta reduce" -}
 
+
 initialFabric :: Fabric
 initialFabric = replicate 1000 (replicate 1000 0)
+
 
 applyClaim :: Fabric -> Claim -> Fabric
 applyClaim fabric Claim { _x, _y, _width, _height } =
@@ -43,14 +52,18 @@ applyClaim fabric Claim { _x, _y, _width, _height } =
   where xs = [_x .. ((_x - 1) + _width)]
         ys = [_y .. ((_y - 1) + _height)]
 
+
 applyClaims :: Fabric -> [Claim] -> Fabric
 applyClaims = foldl applyClaim
+
 
 overlapping :: Fabric -> Int
 overlapping = length . filter (>= 2) . concat
 
+
 solve :: [Claim] -> Int
 solve = overlapping . applyClaims initialFabric
+
 
 main :: IO ()
 main = print . solve . parse =<< getContents

@@ -1,5 +1,7 @@
+{-# LANGUAGE TypeApplications #-}
+
 calculateFuel :: Int -> Int
-calculateFuel mass = floor (realToFrac mass / 3) - 2
+calculateFuel mass = floor @Double (realToFrac mass / 3) - 2
 
 solve :: String -> Int
 solve = sum . fmap (calculateFuel . read) . lines
