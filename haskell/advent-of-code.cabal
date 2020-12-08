@@ -65,16 +65,13 @@ common kitchen-sink
         , Relude.Unsafe
         )
   build-depends:
-    , array
     , async
     , bytestring
     , containers
-    , deepseq
     , generic-lens
     , lens
     , megaparsec
     , mtl
-    , primitive
     , random
     , relude
     , streamly
