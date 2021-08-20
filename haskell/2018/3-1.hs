@@ -39,7 +39,7 @@ modifyAt f i xs = take i xs <> [f (xs !! i)] <> drop (i + 1) xs
 
 
 modifyAt2d :: (a -> a) -> Int -> Int -> [[a]] -> [[a]]
-modifyAt2d f x y = modifyAt (modifyAt f x) y {- HLINT ignore "Eta reduce" -}
+modifyAt2d f x y = modifyAt (modifyAt f x) y
 
 
 initialFabric :: Fabric

@@ -26,7 +26,6 @@ let
       buildInputs = with pkgs; old.buildInputs ++ [
         cabal-install
         ghcid
-        hlint
       ];
     });
 
