@@ -3,9 +3,11 @@ let
 
 in
 pkgs.mkShell {
-  buildInputs = with pkgs; [
-    cargo
-    rustc
-    rustfmt
+  buildInputs = [
+    pkgs.cargo
+    pkgs.rustc
+    pkgs.rustfmt
+  ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+    pkgs.libiconv
   ];
 }
