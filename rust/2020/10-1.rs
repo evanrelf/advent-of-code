@@ -41,7 +41,7 @@ fn solve(input: String) -> usize {
                 match adapter - prev {
                     1 => (ones + 1, threes),
                     3 => (ones, threes + 1),
-                    _ => panic!("NOOO"),
+                    _ => unreachable!(),
                 },
             )
         })
