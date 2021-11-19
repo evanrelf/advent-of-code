@@ -12,7 +12,7 @@ let
     };
 
 
-  pkgs = import ./nix/nixpkgs.nix { overlays = [ haskellPackagesOverlay ]; };
+  pkgs = import <nixpkgs> { overlays = [ haskellPackagesOverlay ]; };
 
 
   advent-of-code = pkgs.haskellPackages.advent-of-code;
