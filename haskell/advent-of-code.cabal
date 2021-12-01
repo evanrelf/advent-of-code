@@ -188,3 +188,8 @@ executable 2020-6-2
 executable 2020-10-1
   import: kitchen-sink
   main-is: 2020/10-1.hs
+
+
+executable 2020-10-2
+  import: kitchen-sink
+  main-is: 2020/10-2.hs
