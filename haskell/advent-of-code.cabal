@@ -53,11 +53,8 @@ common kitchen-sink
     , streamly-optimizations
   mixins:
     , base hiding (Prelude)
+    , relude (Relude as Prelude)
     , relude
-        ( Relude as Prelude
-        , Relude.Extra.Bifunctor
-        , Relude.Unsafe
-        )
   build-depends:
     , async
     , bytestring
