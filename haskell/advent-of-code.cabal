@@ -22,6 +22,7 @@ common common
     , GeneralizedNewtypeDeriving
     , LambdaCase
     , OverloadedStrings
+    , TypeApplications
   ghc-options:
     -Wall
     -Wcompat
@@ -180,3 +181,8 @@ executable 2020-6-2
 executable 2020-10-1
   import: kitchen-sink
   main-is: 2020/10-1.hs
+
+
+executable 2022-1-1
+  import: kitchen-sink
+  main-is: 2022/1-1.hs
