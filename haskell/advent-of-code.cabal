@@ -56,19 +56,14 @@ common kitchen-sink
     , relude (Relude as Prelude)
     , relude
   build-depends:
-    , async
     , bytestring
     , containers
     , generic-lens
     , lens
     , megaparsec
-    , mtl
-    , random
     , relude
     , streamly
-    , string-interpolate
     , text
-    , unordered-containers
     , vector
 
 
