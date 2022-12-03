@@ -50,4 +50,4 @@ solve :: [Round] -> Either Text Int
 solve rounds = Right $ sum (fmap scoreRound rounds)
 
 main :: IO ()
-main = runPuzzleIO (Puzzle parse solve)
+main = run $ BasicPuzzle parse solve

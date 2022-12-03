@@ -6,7 +6,7 @@ import Relude
 import qualified Data.Text as Text
 
 main :: IO ()
-main = runPuzzleIO (Puzzle parse solve)
+main = run $ BasicPuzzle parse solve
 
 parse :: Text -> Either Text [[Word]]
 parse input =

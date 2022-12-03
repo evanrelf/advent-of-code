@@ -1,7 +1,9 @@
 module AdventOfCode.Core
   ( Puzzle (..)
-  , runPuzzle
-  , runPuzzleIO
+
+  , BasicPuzzle (..)
+  , runBasicPuzzle
+  , runBasicPuzzleIO
 
   , StreamingPuzzle (..)
   , runStreamingPuzzle
@@ -15,7 +17,7 @@ module AdventOfCode.Core
   )
 where
 
-import Control.Exception.Safe (MonadCatch, MonadThrow, tryAny, throw)
+import Control.Exception.Safe (MonadCatch, MonadThrow, throw, tryAny)
 import Relude
 import Streamly.Data.Fold (Fold)
 import Streamly.Prelude (SerialT)
@@ -24,21 +26,27 @@ import qualified Data.Text.IO as Text
 import qualified Streamly.Prelude as Streamly
 import qualified System.IO as IO
 
-data Puzzle = forall i o. Show o => Puzzle
-  { puzzle_parse :: Text -> Either Text i
-  , puzzle_solve :: i -> Either Text o
+class Puzzle a where
+  run :: MonadIO m => a -> m ()
+
+data BasicPuzzle = forall i o. Show o => BasicPuzzle
+  { basicPuzzle_parse :: Text -> Either Text i
+  , basicPuzzle_solve :: i -> Either Text o
   }
 
-runPuzzle :: Puzzle -> Text -> Either Text Text
-runPuzzle (Puzzle parse solve) input =
+runBasicPuzzle :: BasicPuzzle -> Text -> Either Text Text
+runBasicPuzzle (BasicPuzzle parse solve) input =
   parse input >>= solve <&> show
 
-runPuzzleIO :: MonadIO m => Puzzle -> m ()
-runPuzzleIO puzzle = liftIO do
+runBasicPuzzleIO :: MonadIO m => BasicPuzzle -> m ()
+runBasicPuzzleIO puzzle = liftIO do
   input <- Text.getContents
-  case runPuzzle puzzle input of
+  case runBasicPuzzle puzzle input of
     Left err -> Text.hPutStrLn stderr err *> exitFailure
     Right answer -> putTextLn answer
+
+instance Puzzle BasicPuzzle where
+  run = runBasicPuzzleIO
 
 data StreamingPuzzle = forall i o. Show o => StreamingPuzzle
   { streamingPuzzle_parse :: forall m. MonadThrow m => SerialT m Text -> SerialT m i
@@ -62,6 +70,9 @@ runStreamingPuzzleIO puzzle = liftIO do
   runStreamingPuzzle puzzle (hGetLines stdin) >>= \case
     Left exc -> throw exc
     Right answer -> putTextLn answer
+
+instance Puzzle StreamingPuzzle where
+  run = runStreamingPuzzleIO
 
 hGetLines
   :: MonadIO (t m)
