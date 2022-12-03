@@ -1,21 +1,12 @@
 let
   pkgs = import <nixpkgs> { };
 
+  advent-of-code = pkgs.haskellPackages.callCabal2nix "advent-of-code" ./. { };
+
 in
-pkgs.mkShell {
+advent-of-code.env.overrideAttrs (prev: {
   buildInputs = [
     pkgs.cabal-install
-    (pkgs.ghc.withPackages (p: [
-      p.bytestring
-      p.containers
-      p.generic-lens
-      p.lens
-      p.megaparsec
-      p.relude
-      p.streamly
-      p.text
-      p.vector
-    ]))
     pkgs.ghcid
   ];
-}
+})
