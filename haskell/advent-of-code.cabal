@@ -1,61 +1,35 @@
-cabal-version: 3.0
+cabal-version: 2.2
 
 name:    advent-of-code
 version: 0.0.0.0
 
-
---------------------------------------------------------------------------------
--- Common
---------------------------------------------------------------------------------
-
-
 common common
   build-depends: base
   default-language: Haskell2010
-  default-extensions:
-    , BlockArguments
-    , DeriveAnyClass
-    , DeriveFunctor
-    , DeriveGeneric
-    , DerivingStrategies
-    , DerivingVia
-    , GeneralizedNewtypeDeriving
-    , LambdaCase
-    , OverloadedStrings
-    , TypeApplications
   ghc-options:
     -Wall
     -Wcompat
+    -Werror=incomplete-patterns
     -Werror=incomplete-record-updates
     -Werror=incomplete-uni-patterns
     -Werror=missing-fields
+    -Werror=missing-methods
     -Werror=partial-fields
     -Widentities
+    -Wmissing-export-lists
     -Wmissing-home-modules
+    -Wno-unticked-promoted-constructors
     -Wredundant-constraints
-    -foptimal-applicative-do
-    -fshow-warning-groups
+
+common executable
+  ghc-options:
     -threaded
     -rtsopts
     -with-rtsopts=-N
 
-
-common streamly-optimizations
-  ghc-options:
-    -O2
-    -fdicts-strict
-    -fmax-worker-args=16
-    -fspec-constr-recursive=16
-
-
-common kitchen-sink
-  import:
-    , common
-    , streamly-optimizations
-  mixins:
-    , base hiding (Prelude)
-    , relude (Relude as Prelude)
-    , relude
+library
+  import: common
+  hs-source-dirs: src
   build-depends:
     , bytestring
     , containers
@@ -63,141 +37,48 @@ common kitchen-sink
     , lens
     , megaparsec
     , relude
+    , relude
     , streamly
     , text
     , vector
+  default-extensions:
+    DeriveGeneric
+    DerivingStrategies
+    LambdaCase
+    NamedFieldPuns
+    NoImplicitPrelude
+    OverloadedStrings
+    TypeApplications
+  exposed-modules:
+    AdventOfCode.Main
+    AdventOfCode.Year2018.Day1.Part1
+    AdventOfCode.Year2018.Day1.Part2
+    AdventOfCode.Year2018.Day2.Part1
+    AdventOfCode.Year2018.Day2.Part2
+    AdventOfCode.Year2018.Day3.Part1
+    AdventOfCode.Year2019.Day1.Part1
+    AdventOfCode.Year2019.Day1.Part2
+    AdventOfCode.Year2020.Day1.Part1
+    AdventOfCode.Year2020.Day1.Part2
+    AdventOfCode.Year2020.Day10.Part1
+    AdventOfCode.Year2020.Day2.Part1
+    AdventOfCode.Year2020.Day2.Part2
+    AdventOfCode.Year2020.Day3.Part1
+    AdventOfCode.Year2020.Day3.Part2
+    AdventOfCode.Year2020.Day4.Part1
+    AdventOfCode.Year2020.Day4.Part2
+    AdventOfCode.Year2020.Day5.Part1
+    AdventOfCode.Year2020.Day5.Part2
+    AdventOfCode.Year2020.Day6.Part1
+    AdventOfCode.Year2020.Day6.Part2
+    AdventOfCode.Year2022.Day1.Part1
+    AdventOfCode.Year2022.Day1.Part2
+    AdventOfCode.Year2022.Day2.Part1
+    AdventOfCode.Year2022.Day2.Part2
 
-
---------------------------------------------------------------------------------
--- 2018
---------------------------------------------------------------------------------
-
-
-executable 2018-1-1
-  import: common
-  main-is: 2018/1-1.hs
-
-
-executable 2018-1-2
-  import: common
-  main-is: 2018/1-2.hs
-
-
-executable 2018-2-1
-  import: common
-  main-is: 2018/2-1.hs
-
-
-executable 2018-2-2
-  import: common
-  main-is: 2018/2-2.hs
-
-
-executable 2018-3-1
-  import: common
-  main-is: 2018/3-1.hs
-
-
---------------------------------------------------------------------------------
--- 2019
---------------------------------------------------------------------------------
-
-
-executable 2019-1-1
-  import: kitchen-sink
-  main-is: 2019/1-1.hs
-
-
-executable 2019-1-2
-  import: kitchen-sink
-  main-is: 2019/1-2.hs
-
-
---------------------------------------------------------------------------------
--- 2020
---------------------------------------------------------------------------------
-
-
-executable 2020-1-1
-  import: kitchen-sink
-  main-is: 2020/1-1.hs
-
-
-executable 2020-1-2
-  import: kitchen-sink
-  main-is: 2020/1-2.hs
-
-
-executable 2020-2-1
-  import: kitchen-sink
-  main-is: 2020/2-1.hs
-
-
-executable 2020-2-2
-  import: kitchen-sink
-  main-is: 2020/2-2.hs
-
-
-executable 2020-3-1
-  import: kitchen-sink
-  main-is: 2020/3-1.hs
-
-
-executable 2020-3-2
-  import: kitchen-sink
-  main-is: 2020/3-2.hs
-
-
-executable 2020-4-1
-  import: kitchen-sink
-  main-is: 2020/4-1.hs
-
-
-executable 2020-4-2
-  import: kitchen-sink
-  main-is: 2020/4-2.hs
-
-
-executable 2020-5-1
-  import: kitchen-sink
-  main-is: 2020/5-1.hs
-
-
-executable 2020-5-2
-  import: kitchen-sink
-  main-is: 2020/5-2.hs
-
-
-executable 2020-6-1
-  import: kitchen-sink
-  main-is: 2020/6-1.hs
-
-
-executable 2020-6-2
-  import: kitchen-sink
-  main-is: 2020/6-2.hs
-
-
-executable 2020-10-1
-  import: kitchen-sink
-  main-is: 2020/10-1.hs
-
-
-executable 2022-1-1
-  import: kitchen-sink
-  main-is: 2022/1-1.hs
-
-
-executable 2022-1-2
-  import: kitchen-sink
-  main-is: 2022/1-2.hs
-
-
-executable 2022-2-1
-  import: kitchen-sink
-  main-is: 2022/2-1.hs
-
-
-executable 2022-2-2
-  import: kitchen-sink
-  main-is: 2022/2-2.hs
+executable template
+  import:
+    , common
+    , executable
+  main-is: src/Main.hs
+  build-depends: template
