@@ -196,3 +196,8 @@ executable 2022-1-2
 executable 2022-2-1
   import: kitchen-sink
   main-is: 2022/2-1.hs
+
+
+executable 2022-2-2
+  import: kitchen-sink
+  main-is: 2022/2-2.hs
