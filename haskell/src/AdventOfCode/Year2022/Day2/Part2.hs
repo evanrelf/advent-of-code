@@ -1,9 +1,9 @@
 module AdventOfCode.Year2022.Day2.Part2 (main) where
 
+import AdventOfCode.Core
 import Relude hiding (round)
 
 import qualified Data.Text as Text
-import qualified Data.Text.IO as Text
 
 data Shape = Rock | Paper | Scissors
   deriving stock (Eq, Enum, Bounded)
@@ -29,30 +29,30 @@ scoreRound :: Round -> Int
 scoreRound round@(_, outcome) = scoreShape shape + scoreOutcome outcome
   where shape = uncurry play round
 
-parseShape :: Text -> Shape
+parseShape :: Text -> Either Text Shape
 parseShape = \case
-  "A" -> Rock
-  "B" -> Paper
-  "C" -> Scissors
-  text -> error $ "Unexpected shape code '" <> text <> "'"
+  "A" -> Right Rock
+  "B" -> Right Paper
+  "C" -> Right Scissors
+  text -> Left $ "Unexpected shape code '" <> text <> "'"
 
-parseOutcome :: Text -> Outcome
+parseOutcome :: Text -> Either Text Outcome
 parseOutcome = \case
-  "X" -> Loss
-  "Y" -> Draw
-  "Z" -> Win
-  text -> error $ "Unexpected outcome code '" <> text <> "'"
+  "X" -> Right Loss
+  "Y" -> Right Draw
+  "Z" -> Right Win
+  text -> Left $ "Unexpected outcome code '" <> text <> "'"
 
-parseRound :: Text -> Round
+parseRound :: Text -> Either Text Round
 parseRound text = case Text.splitOn " " text of
-  [shape, outcome] -> (parseShape shape, parseOutcome outcome)
-  _ -> error $ "Unexpected round '" <> text <> "'"
+  [shape, outcome] -> (,) <$> parseShape shape <*> parseOutcome outcome
+  _ -> Left $ "Unexpected round '" <> text <> "'"
 
-parse :: Text -> [Round]
-parse input = fmap parseRound (lines input)
+parse :: Text -> Either Text [Round]
+parse input = traverse parseRound (lines input)
 
-solve :: [Round] -> Int
-solve rounds = sum (fmap scoreRound rounds)
+solve :: [Round] -> Either Text Int
+solve rounds = Right $ sum (fmap scoreRound rounds)
 
 main :: IO ()
-main = print . solve . parse =<< Text.getContents
+main = runPuzzleIO (Puzzle parse solve)
