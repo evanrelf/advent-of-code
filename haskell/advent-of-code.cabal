@@ -37,19 +37,24 @@ library
     , lens
     , megaparsec
     , relude
-    , relude
+    , safe-exceptions
     , streamly
     , text
     , vector
   default-extensions:
+    BlockArguments
     DeriveGeneric
     DerivingStrategies
+    ExistentialQuantification
+    FlexibleContexts
     LambdaCase
     NamedFieldPuns
     NoImplicitPrelude
     OverloadedStrings
+    RankNTypes
     TypeApplications
   exposed-modules:
+    AdventOfCode.Core
     AdventOfCode.Main
     AdventOfCode.Year2018.Day1.Part1
     AdventOfCode.Year2018.Day1.Part2
