@@ -91,4 +91,4 @@ executable template
     , common
     , executable
   main-is: src/Main.hs
-  build-depends: template
+  build-depends: advent-of-code
