@@ -43,6 +43,7 @@ library
     , vector
   default-extensions:
     BlockArguments
+    DeriveAnyClass
     DeriveGeneric
     DerivingStrategies
     ExistentialQuantification

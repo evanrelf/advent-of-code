@@ -12,16 +12,17 @@ module AdventOfCode.Core
     -- * Re-exports
   , SerialT
   , Fold
-  , MonadThrow
-  , MonadCatch
+  , MonadAsync
+  , throw
   )
 where
 
-import Control.Exception.Safe (MonadCatch, MonadThrow, throw, tryAny)
+import Control.Exception.Safe (MonadCatch, MonadThrow)
 import Relude
 import Streamly.Data.Fold (Fold)
-import Streamly.Prelude (SerialT)
+import Streamly.Prelude (IsStream, MonadAsync, SerialT)
 
+import qualified Control.Exception.Safe as Exception
 import qualified Data.Text.IO as Text
 import qualified Streamly.Prelude as Streamly
 import qualified System.IO as IO
@@ -39,9 +40,9 @@ runBasicPuzzle (BasicPuzzle parse solve) input =
   parse input >>= solve <&> show
 
 runBasicPuzzleIO :: MonadIO m => BasicPuzzle -> m ()
-runBasicPuzzleIO puzzle = liftIO do
+runBasicPuzzleIO basicPuzzle = liftIO do
   input <- Text.getContents
-  case runBasicPuzzle puzzle input of
+  case runBasicPuzzle basicPuzzle input of
     Left err -> Text.hPutStrLn stderr err *> exitFailure
     Right answer -> putTextLn answer
 
@@ -49,12 +50,12 @@ instance Puzzle BasicPuzzle where
   run = runBasicPuzzleIO
 
 data StreamingPuzzle = forall i o. Show o => StreamingPuzzle
-  { streamingPuzzle_parse :: forall m. MonadThrow m => SerialT m Text -> SerialT m i
-  , streamingPuzzle_solve :: forall m. MonadThrow m => Fold m i o
+  { streamingPuzzle_parse :: forall m. MonadAsync m => SerialT m Text -> SerialT m i
+  , streamingPuzzle_solve :: forall m. MonadAsync m => Fold m i o
   }
 
 runStreamingPuzzle
-  :: MonadCatch m
+  :: (MonadAsync m, MonadCatch m)
   => StreamingPuzzle
   -> SerialT m Text
   -> m (Either SomeException Text)
@@ -63,21 +64,28 @@ runStreamingPuzzle (StreamingPuzzle parse solve) input = do
   & parse
   & Streamly.fold solve
   & fmap show
-  & tryAny
+  & Exception.tryAny
 
 runStreamingPuzzleIO :: MonadIO m => StreamingPuzzle -> m ()
-runStreamingPuzzleIO puzzle = liftIO do
-  runStreamingPuzzle puzzle (hGetLines stdin) >>= \case
-    Left exc -> throw exc
+runStreamingPuzzleIO streamingPuzzle = liftIO do
+  runStreamingPuzzle streamingPuzzle (hGetLines stdin) >>= \case
+    Left exc -> Exception.throw exc
     Right answer -> putTextLn answer
 
 instance Puzzle StreamingPuzzle where
   run = runStreamingPuzzleIO
 
+newtype StreamingPuzzleException = StreamingPuzzleException Text
+  deriving stock (Show)
+  deriving anyclass (Exception)
+
+throw :: MonadThrow m => Text -> m a
+throw = Exception.throw . StreamingPuzzleException
+
 hGetLines
   :: MonadIO (t m)
-  => Streamly.IsStream t
-  => Streamly.MonadAsync m
+  => IsStream t
+  => MonadAsync m
   => Handle
   -> t m Text
 hGetLines handle = do
