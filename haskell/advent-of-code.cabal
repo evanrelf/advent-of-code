@@ -58,6 +58,7 @@ library
   exposed-modules:
     AdventOfCode.Core
     AdventOfCode.Main
+    AdventOfCode.Parsing
     -- 2018
     AdventOfCode.Year2018.Day1.Part1
     AdventOfCode.Year2018.Day1.Part2
