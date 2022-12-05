@@ -42,6 +42,7 @@ library
     , streamly
     , text
     , vector
+    , witherable
   default-extensions:
     BlockArguments
     DeriveAnyClass
@@ -89,6 +90,7 @@ library
     AdventOfCode.Year2022.Day2.Part2
     AdventOfCode.Year2022.Day3.Part1
     AdventOfCode.Year2022.Day3.Part2
+    AdventOfCode.Year2022.Day4.Part1
 
 executable template
   import:
