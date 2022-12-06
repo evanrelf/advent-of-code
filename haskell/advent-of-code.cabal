@@ -92,8 +92,10 @@ library
     AdventOfCode.Year2022.Day3.Part2
     AdventOfCode.Year2022.Day4.Part1
     AdventOfCode.Year2022.Day4.Part2
+    AdventOfCode.Year2022.Day5.Part1
+    AdventOfCode.Year2022.Day5.Part2
 
-executable template
+executable advent-of-code
   import:
     , common
     , executable

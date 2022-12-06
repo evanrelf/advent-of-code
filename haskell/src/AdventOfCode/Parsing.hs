@@ -1,5 +1,6 @@
 module AdventOfCode.Parsing
-  ( runParser
+  ( Parser
+  , runParser
 
     -- * Re-exports
   , module Text.Megaparsec
@@ -13,7 +14,9 @@ import Text.Megaparsec.Char
 
 import qualified Text.Megaparsec as Megaparsec
 
-runParser :: Parsec Void Text a -> Text -> Either Text a
+type Parser = Parsec Void Text
+
+runParser :: Parser a -> Text -> Either Text a
 runParser parser input =
   case Megaparsec.runParser parser "" input of
     Left err -> Left $ toText (errorBundlePretty err)
