@@ -2,7 +2,6 @@ module AdventOfCode.Year2020.Day18.Part2 (main) where
 
 import AdventOfCode.Core
 import AdventOfCode.Parsing
-import Control.Monad.Combinators.Expr (Operator (..), makeExprParser)
 import Relude hiding (some)
 import Relude.Unsafe (read)
 

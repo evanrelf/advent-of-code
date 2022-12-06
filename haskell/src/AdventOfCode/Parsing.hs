@@ -5,9 +5,11 @@ module AdventOfCode.Parsing
     -- * Re-exports
   , module Text.Megaparsec
   , module Text.Megaparsec.Char
+  , module Control.Monad.Combinators.Expr
   )
 where
 
+import Control.Monad.Combinators.Expr
 import Relude
 import Text.Megaparsec hiding (parse, runParser)
 import Text.Megaparsec.Char
