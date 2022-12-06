@@ -36,6 +36,7 @@ library
     , generic-lens
     , lens
     , megaparsec
+    , parser-combinators
     , relude
     , safe-exceptions
     , split
@@ -83,6 +84,8 @@ library
     AdventOfCode.Year2020.Day5.Part2
     AdventOfCode.Year2020.Day6.Part1
     AdventOfCode.Year2020.Day6.Part2
+    AdventOfCode.Year2020.Day18.Part1
+    AdventOfCode.Year2020.Day18.Part2
     -- 2022
     AdventOfCode.Year2022.Day1.Part1
     AdventOfCode.Year2022.Day1.Part2
