@@ -97,6 +97,8 @@ library
     AdventOfCode.Year2022.Day4.Part2
     AdventOfCode.Year2022.Day5.Part1
     AdventOfCode.Year2022.Day5.Part2
+    AdventOfCode.Year2022.Day6.Part1
+    AdventOfCode.Year2022.Day6.Part2
 
 executable advent-of-code
   import:
