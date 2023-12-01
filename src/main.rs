@@ -16,6 +16,7 @@ fn main() -> anyhow::Result<ExitCode> {
 
     let output = match (args.year, args.day, args.part) {
         (2023, 1, 1) => year_2023::day_01_1::solve(&get_input()?)?,
+        (2023, 1, 2) => year_2023::day_01_2::solve(&get_input()?)?,
         (year, day, part) => {
             eprintln!("No solution for {year} day {day} part {part}");
             return Ok(ExitCode::FAILURE);
