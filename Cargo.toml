@@ -5,8 +5,11 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.75"
+automod = "1.0.13"
 clap = { version = "4.4.10", features = ["derive"] }
 
 [lints]
+clippy.missing_errors_doc = "allow"
+clippy.must_use_candidate = "allow"
 clippy.pedantic = "warn"
 clippy.use_self = "warn"

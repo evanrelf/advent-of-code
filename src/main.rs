@@ -1,3 +1,6 @@
+#[rustfmt::skip]
+pub mod year_2023 { automod::dir!(pub "src/year_2023/"); }
+
 use clap::Parser as _;
 use std::{io::Read as _, process::ExitCode};
 
@@ -12,7 +15,7 @@ fn main() -> anyhow::Result<ExitCode> {
     let args = Args::parse();
 
     let output = match (args.year, args.day, args.part) {
-        (2023, 1, 1) => get_input()?, // TODO
+        (2023, 1, 1) => year_2023::day_01_1::solve(&get_input()?)?,
         (year, day, part) => {
             eprintln!("No solution for {year} day {day} part {part}");
             return Ok(ExitCode::FAILURE);
