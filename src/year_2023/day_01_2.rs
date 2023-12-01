@@ -8,8 +8,7 @@ pub fn solve(input: &str) -> anyhow::Result<usize> {
         let mut last = None;
         let mut input = line;
         while !input.is_empty() {
-            // let Ok(char) = digit.parse_next(&mut input) else {
-            let Ok((rest, char)) = digit.parse_peek(input) else {
+            let Ok(char) = digit.parse_next(&mut input) else {
                 let Some((next_char_index, _)) = input.char_indices().nth(1) else {
                     break;
                 };
@@ -18,7 +17,6 @@ pub fn solve(input: &str) -> anyhow::Result<usize> {
                     .expect("index is valid because it came from `char_indices`");
                 continue;
             };
-            input = rest;
             if first.is_none() {
                 first = Some(char);
             } else {
@@ -41,8 +39,7 @@ pub fn solve(input: &str) -> anyhow::Result<usize> {
 
 fn digit(input: &mut &str) -> PResult<char> {
     alt((
-        one_of('0'..='9'),
-        "zero".value('0'),
+        one_of('1'..='9'),
         "one".value('1'),
         "two".value('2'),
         "three".value('3'),
