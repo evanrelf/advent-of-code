@@ -16,7 +16,7 @@ pub fn solve(input: &str) -> anyhow::Result<usize> {
         }
         let number_string = match (first, last) {
             (Some(first), Some(last)) => format!("{first}{last}"),
-            (Some(first), None) => format!("{first}"),
+            (Some(first), None) => format!("{first}{first}"),
             (None, Some(_)) => unreachable!(),
             (None, None) => anyhow::bail!("Line lacks digits"),
         };
