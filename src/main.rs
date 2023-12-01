@@ -1,5 +1,5 @@
 use clap::Parser as _;
-use std::process::ExitCode;
+use std::{io::Read as _, process::ExitCode};
 
 #[derive(clap::Parser)]
 struct Args {
@@ -8,15 +8,25 @@ struct Args {
     part: u8,
 }
 
-fn main() -> ExitCode {
+fn main() -> anyhow::Result<ExitCode> {
     let args = Args::parse();
 
-    match (args.year, args.day, args.part) {
+    let output = match (args.year, args.day, args.part) {
+        (2023, 1, 1) => get_input()?, // TODO
         (year, day, part) => {
             eprintln!("No solution for {year} day {day} part {part}");
-            return ExitCode::FAILURE;
+            return Ok(ExitCode::FAILURE);
         }
-    }
+    };
 
-    ExitCode::SUCCESS
+    println!("{output}");
+
+    Ok(ExitCode::SUCCESS)
+}
+
+fn get_input() -> anyhow::Result<String> {
+    let mut stdin = std::io::stdin().lock();
+    let mut string = String::new();
+    stdin.read_to_string(&mut string)?;
+    Ok(string)
 }
