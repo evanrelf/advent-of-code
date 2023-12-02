@@ -59,7 +59,7 @@ mod tests {
     use indoc::indoc;
 
     #[test]
-    fn test() {
+    fn test_sample() {
         let input = indoc! {"
             two1nine
             eightwothree
@@ -70,5 +70,11 @@ mod tests {
             7pqrstsixteen
         "};
         assert_eq!(solve(input).unwrap(), 281);
+    }
+
+    #[test]
+    fn test_overlap() {
+        let input = "qccnqvfnkkkvsixktsixnine1twoneq";
+        assert_eq!(solve(input).unwrap(), 61);
     }
 }
