@@ -8,26 +8,42 @@ pub fn solve(input: &str) -> anyhow::Result<usize> {
         let mut last = None;
         let mut input = line;
         while !input.is_empty() {
-            let Ok(char) = digit.parse_next(&mut input) else {
-                let Some((next_char_index, _)) = input.char_indices().nth(1) else {
+            let result = digit.parse_peek(input);
+            let mut indices = input.char_indices();
+            match (indices.next(), indices.next()) {
+                (Some(_), Some((next_char_index, _))) => {
+                    input = input
+                        .get(next_char_index..)
+                        .expect("index is valid because it came from `char_indices`");
+                    let Ok((_, char)) = result else {
+                        continue;
+                    };
+                    if first.is_none() {
+                        first = Some(char);
+                    } else {
+                        last = Some(char);
+                    }
+                }
+                (Some(_), None) => {
+                    let Ok((_, char)) = result else {
+                        break;
+                    };
+                    if first.is_none() {
+                        first = Some(char);
+                    } else {
+                        last = Some(char);
+                    }
                     break;
-                };
-                input = input
-                    .get(next_char_index..)
-                    .expect("index is valid because it came from `char_indices`");
-                continue;
-            };
-            if first.is_none() {
-                first = Some(char);
-            } else {
-                last = Some(char);
+                }
+                (None, Some(_)) => unreachable!(),
+                (None, None) => break,
             }
         }
         let number_string = match (first, last) {
             (Some(first), Some(last)) => format!("{first}{last}"),
             (Some(first), None) => format!("{first}{first}"),
             (None, Some(_)) => unreachable!(),
-            (None, None) => anyhow::bail!("Line lacks digits"),
+            (None, None) => anyhow::bail!("Line lacks digits: {line}"),
         };
         let number = number_string
             .parse::<usize>()
