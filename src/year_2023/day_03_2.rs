@@ -1,5 +1,7 @@
 use std::str::FromStr;
 
+crate::aoc!(2023, 3, 2, solve);
+
 pub fn solve(input: &str) -> anyhow::Result<usize> {
     let grid: Grid = input.parse()?;
     let numbers: Vec<GridNumber> = grid.numbers();

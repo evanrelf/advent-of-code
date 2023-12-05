@@ -1,5 +1,7 @@
 use std::{collections::HashSet, convert::Infallible, str::FromStr};
 
+crate::aoc!(2023, 3, 1, solve);
+
 pub fn solve(input: &str) -> anyhow::Result<usize> {
     let grid = input.parse::<Grid>()?;
     let numbers = grid.numbers()?;

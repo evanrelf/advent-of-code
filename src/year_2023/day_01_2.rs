@@ -1,6 +1,8 @@
 use anyhow::Context as _;
 use winnow::{combinator::alt, prelude::*, token::one_of};
 
+crate::aoc!(2023, 1, 2, solve);
+
 pub fn solve(input: &str) -> anyhow::Result<usize> {
     let mut sum = 0;
     for line in input.lines() {

@@ -1,5 +1,7 @@
 use anyhow::Context as _;
 
+crate::aoc!(2023, 1, 1, solve);
+
 pub fn solve(input: &str) -> anyhow::Result<usize> {
     let mut sum = 0;
     for line in input.lines() {

@@ -5,6 +5,8 @@ use winnow::{
     prelude::*,
 };
 
+crate::aoc!(2023, 2, 1, solve);
+
 struct Game {
     id: usize,
     cubes: Vec<CubeSet>,

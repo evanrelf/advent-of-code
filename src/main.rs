@@ -1,6 +1,10 @@
-#[rustfmt::skip]
-pub mod year_2023 { automod::dir!(pub "src/year_2023/"); }
+mod solution;
+pub(crate) use solution::aoc;
 
+#[rustfmt::skip]
+mod year_2023 { automod::dir!(pub "src/year_2023/"); }
+
+use crate::solution::SOLUTIONS;
 use clap::Parser as _;
 use std::{io::Read as _, process::ExitCode};
 
@@ -14,23 +18,30 @@ struct Args {
 fn main() -> anyhow::Result<ExitCode> {
     let args = Args::parse();
 
-    let output = match (args.year, args.day, args.part) {
-        (2023, 1, 1) => year_2023::day_01_1::solve(&get_input()?)?,
-        (2023, 1, 2) => year_2023::day_01_2::solve(&get_input()?)?,
-        (2023, 2, 1) => year_2023::day_02_1::solve(&get_input()?)?,
-        (2023, 2, 2) => year_2023::day_02_2::solve(&get_input()?)?,
-        (2023, 3, 1) => year_2023::day_03_1::solve(&get_input()?)?,
-        (2023, 3, 2) => year_2023::day_03_2::solve(&get_input()?)?,
-        (2023, 4, 1) => year_2023::day_04_1::solve(&get_input()?)?,
-        (year, day, part) => {
-            eprintln!("No solution for {year} day {day} part {part}");
-            return Ok(ExitCode::FAILURE);
+    for solution in SOLUTIONS {
+        let year = solution.year == args.year;
+        let day = solution.day == args.day;
+        let part = solution.part == args.part;
+
+        if year && day && part {
+            let input = get_input()?;
+            let solve = solution
+                .solve
+                .lock()
+                .expect("Mutex is not poisoned")
+                .take()
+                .expect("Value is present");
+            let output = solve(&input)?;
+            println!("{output}");
+            return Ok(ExitCode::SUCCESS);
         }
-    };
+    }
 
-    println!("{output}");
-
-    Ok(ExitCode::SUCCESS)
+    eprintln!(
+        "No solution for {} day {} part {}",
+        args.year, args.day, args.part
+    );
+    Ok(ExitCode::FAILURE)
 }
 
 fn get_input() -> anyhow::Result<String> {

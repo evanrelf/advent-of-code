@@ -5,6 +5,8 @@ use winnow::{
     prelude::*,
 };
 
+crate::aoc!(2023, 2, 2, solve);
+
 struct Game {
     #[allow(dead_code)]
     id: usize,
