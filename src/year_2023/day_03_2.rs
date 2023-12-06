@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-crate::aoc!(2023, 3, 2, solve);
+crate::aoc!();
 
 pub fn solve(input: &str) -> anyhow::Result<usize> {
     let grid: Grid = input.parse()?;

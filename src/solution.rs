@@ -1,4 +1,5 @@
 use once_cell::sync::Lazy;
+use regex::Regex;
 use std::{fmt::Display, sync::Mutex};
 
 #[linkme::distributed_slice]
@@ -31,7 +32,27 @@ impl Solution {
     }
 }
 
+pub fn parse_module_path(module_path: &str) -> (u16, u8, u8) {
+    static REGEX: Lazy<Regex> = Lazy::new(|| {
+        // e.g. `advent_of_code::year_2023::day_01_1`
+        Regex::new(r"^\w+::year_(?<year>\d{4})::day_(?<day>\d{1,2})_(?<part>[12])$").unwrap()
+    });
+    let captures = REGEX.captures(module_path).unwrap();
+    let year = captures["year"].parse().unwrap();
+    let day = captures["day"].parse().unwrap();
+    let part = captures["part"].parse().unwrap();
+    (year, day, part)
+}
+
 macro_rules! aoc {
+    () => {
+        #[linkme::distributed_slice($crate::solution::SOLUTIONS)]
+        static _SOLUTION: ::once_cell::sync::Lazy<$crate::solution::Solution> =
+            ::once_cell::sync::Lazy::new(|| {
+                let (year, day, part) = $crate::solution::parse_module_path(::std::module_path!());
+                $crate::solution::Solution::new(year, day, part, solve)
+            });
+    };
     ($year:literal, $day:literal, $part:literal, $solve:ident) => {
         #[linkme::distributed_slice($crate::solution::SOLUTIONS)]
         static _SOLUTION: ::once_cell::sync::Lazy<$crate::solution::Solution> =

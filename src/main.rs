@@ -25,12 +25,7 @@ fn main() -> anyhow::Result<ExitCode> {
 
         if year && day && part {
             let input = get_input()?;
-            let solve = solution
-                .solve
-                .lock()
-                .expect("Mutex is not poisoned")
-                .take()
-                .expect("Value is present");
+            let solve = solution.solve.lock().unwrap().take().unwrap();
             let output = solve(&input)?;
             println!("{output}");
             return Ok(ExitCode::SUCCESS);

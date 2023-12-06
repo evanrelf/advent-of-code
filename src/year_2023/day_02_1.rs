@@ -5,7 +5,7 @@ use winnow::{
     prelude::*,
 };
 
-crate::aoc!(2023, 2, 1, solve);
+crate::aoc!();
 
 struct Game {
     id: usize,

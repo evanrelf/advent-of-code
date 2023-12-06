@@ -6,7 +6,7 @@ use winnow::{
     prelude::*,
 };
 
-crate::aoc!(2023, 4, 1, solve);
+crate::aoc!();
 
 pub fn solve(input: &str) -> anyhow::Result<usize> {
     let cards = input
