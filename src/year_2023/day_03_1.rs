@@ -77,8 +77,6 @@ impl GridNumber {
         self.number.to_string().len()
     }
 
-    #[rustfmt::skip]
-    #[allow(clippy::many_single_char_names)]
     fn adjacencies(&self, Grid(grid): &Grid) -> HashSet<(usize, usize)> {
         let max_y = grid.len() - 1;
         let max_x = grid[0].len() - 1;
@@ -159,7 +157,7 @@ mod tests {
     }
 
     #[test]
-    fn test_grid_fromstr() {
+    fn test_grid_from_str() {
         let input = indoc! {"
             123
             456

@@ -12,10 +12,11 @@ pub fn solve(input: &str) -> anyhow::Result<usize> {
             numbers
                 .iter()
                 .filter(|number| number.is_adjacent(star))
+                .map(|number| number.number)
                 .collect::<Vec<_>>()
         })
         .filter_map(|numbers| match &numbers[..] {
-            &[l, r] => Some(l.number * r.number),
+            &[l, r] => Some(l * r),
             _ => None,
         })
         .sum();
@@ -142,7 +143,7 @@ mod tests {
     }
 
     #[test]
-    fn test_grid_fromstr() {
+    fn test_grid_from_str() {
         assert!(SAMPLE.parse::<Grid>().is_ok());
 
         assert_eq!(

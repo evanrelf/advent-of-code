@@ -33,7 +33,7 @@ fn main() -> anyhow::Result<ExitCode> {
     }
 
     eprintln!(
-        "No solution for {} day {} part {}",
+        "No solution for year {} day {} part {}",
         args.year, args.day, args.part
     );
     Ok(ExitCode::FAILURE)
