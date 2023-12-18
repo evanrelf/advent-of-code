@@ -46,7 +46,7 @@ pub fn parse_module_path(module_path: &str) -> (u16, u8, u8) {
 
 macro_rules! aoc {
     () => {
-        #[linkme::distributed_slice($crate::solution::SOLUTIONS)]
+        #[::linkme::distributed_slice($crate::solution::SOLUTIONS)]
         static _SOLUTION: ::once_cell::sync::Lazy<$crate::solution::Solution> =
             ::once_cell::sync::Lazy::new(|| {
                 let (year, day, part) = $crate::solution::parse_module_path(::std::module_path!());
@@ -54,7 +54,7 @@ macro_rules! aoc {
             });
     };
     ($year:literal, $day:literal, $part:literal, $solve:ident) => {
-        #[linkme::distributed_slice($crate::solution::SOLUTIONS)]
+        #[::linkme::distributed_slice($crate::solution::SOLUTIONS)]
         static _SOLUTION: ::once_cell::sync::Lazy<$crate::solution::Solution> =
             ::once_cell::sync::Lazy::new(|| {
                 $crate::solution::Solution::new($year, $day, $part, $solve)
