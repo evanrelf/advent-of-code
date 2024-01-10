@@ -9,6 +9,7 @@ automod = "1.0.13"
 clap = { version = "4.4.10", features = ["derive"] }
 derive_more = { version = "0.99.17", default-features = false, features = ["from", "into"] }
 enum-iterator = "1.4.1"
+flagset = "0.4.4"
 flume = "0.11.0"
 indoc = "2.0.4"
 linkme = "0.3.17"
