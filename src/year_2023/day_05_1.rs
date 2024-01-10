@@ -124,6 +124,7 @@ where
 struct Range<S, D> {
     destination_range_start: D,
     source_range_start: S,
+    #[allow(clippy::struct_field_names)]
     range_length: usize,
 }
 
