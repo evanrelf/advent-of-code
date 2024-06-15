@@ -47,6 +47,7 @@ library
   build-depends:
     , bytestring
     , hedgehog
+    , optics
     , optparse-applicative
     , string-interpolate
     , tasty
@@ -55,6 +56,7 @@ library
     , text
   exposed-modules:
     , AdventOfCode
+    , AdventOfCode.Optics
     , AdventOfCode.Year2023.Day01.Part1
 
 executable advent-of-code
