@@ -1,6 +1,10 @@
 {-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE QuasiQuotes #-}
+
 module AdventOfCode (main) where
 
+import Data.String.Interpolate (i)
+import Data.Text.IO qualified as Text
 import Options.Applicative
 
 data Options = Options
@@ -24,5 +28,8 @@ getOptions = do
 
 main :: IO ()
 main = do
-  _options <- getOptions
-  putTextLn "Hello world!"
+  options <- getOptions
+  case (options.year, options.day, options.part) of
+    (y, d, p) -> do
+      Text.hPutStrLn stderr [i|No solution for year #{y} day #{d} part #{p}|]
+      exitFailure

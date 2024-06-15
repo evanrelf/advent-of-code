@@ -46,6 +46,8 @@ library
   hs-source-dirs: src
   build-depends:
     , optparse-applicative
+    , string-interpolate
+    , text
   exposed-modules:
     , AdventOfCode
 
