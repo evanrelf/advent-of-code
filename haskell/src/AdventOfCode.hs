@@ -1,19 +1,26 @@
+{-# LANGUAGE ApplicativeDo #-}
 module AdventOfCode (main) where
 
-import Options.Applicative qualified as Options
+import Options.Applicative
 
-data Options = Options {}
+data Options = Options
+  { year :: Word16
+  , day :: Word8
+  , part :: Word8
+  }
 
-parseOptions :: Options.Parser Options
+parseOptions :: Parser Options
 parseOptions = do
-  pure Options{}
+  year <- option auto (long "year")
+  day <- option auto (long "day")
+  part <- option auto (long "part")
+  pure Options{ year, day, part }
 
 getOptions :: IO Options
 getOptions = do
-  let parserPrefs = Options.prefs mempty
-  let parserInfo =
-        Options.info (Options.helper <*> parseOptions) mempty
-  Options.customExecParser parserPrefs parserInfo
+  let parserPrefs = prefs mempty
+  let parserInfo = info (helper <*> parseOptions) mempty
+  customExecParser parserPrefs parserInfo
 
 main :: IO ()
 main = do
