@@ -1,2 +1,5 @@
 target/
+dist-newstyle/
+result
+result-*
 input.txt
