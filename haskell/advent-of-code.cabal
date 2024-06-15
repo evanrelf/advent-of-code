@@ -48,6 +48,7 @@ library
     , bytestring
     , optparse-applicative
     , string-interpolate
+    , tasty
     , text
   exposed-modules:
     , AdventOfCode
@@ -57,6 +58,12 @@ executable advent-of-code
     , common
     , executable
   main-is: src/Main.hs
-  build-depends:
-    , optparse-applicative
-    , advent-of-code
+  build-depends: advent-of-code
+
+test-suite test
+  import:
+    , common
+    , executable
+  type: exitcode-stdio-1.0
+  main-is: src/Test.hs
+  build-depends: advent-of-code
