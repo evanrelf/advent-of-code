@@ -17,6 +17,7 @@ main = do
   options <- getOptions
   solve <- case (options.year, options.day, options.part) of
     (2023, 01, 1) -> solution AdventOfCode.Year2023.Day01.part1
+    (2023, 01, 2) -> solution AdventOfCode.Year2023.Day01.part1
     (y, d, p) -> do
       Text.hPutStrLn stderr [i|No solution for year #{y} day #{d} part #{p}|]
       exitFailure
