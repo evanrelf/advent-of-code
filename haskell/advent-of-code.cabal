@@ -55,6 +55,7 @@ library
     , text
   exposed-modules:
     , AdventOfCode
+    , AdventOfCode.Year2023.Day01.Part1
 
 executable advent-of-code
   import:

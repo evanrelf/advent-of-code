@@ -15,6 +15,7 @@ main :: IO ()
 main = do
   options <- getOptions
   solve <- case (options.year, options.day, options.part) of
+    (2023, 01, 1) -> s AdventOfCode.Year2023.Day01.Part1.solve
     (y, d, p) -> do
       Text.hPutStrLn stderr [i|No solution for year #{y} day #{d} part #{p}|]
       exitFailure
@@ -50,3 +51,6 @@ getOptions = do
 
 data Showable where
   Showable :: Show a => a -> Showable
+
+s :: (Show a, Functor e, Applicative f) => (t -> e a) -> f (t -> e Showable)
+s f = pure (fmap Showable . f)
