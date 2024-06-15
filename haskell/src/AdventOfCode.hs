@@ -4,7 +4,7 @@
 
 module AdventOfCode (main, test) where
 
-import AdventOfCode.Year2023.Day01.Part1 qualified
+import AdventOfCode.Year2023.Day01 qualified
 import Control.Exception (throwIO)
 import Data.ByteString qualified as ByteString
 import Data.String.Interpolate (i)
@@ -16,7 +16,7 @@ main :: IO ()
 main = do
   options <- getOptions
   solve <- case (options.year, options.day, options.part) of
-    (2023, 01, 1) -> solution AdventOfCode.Year2023.Day01.Part1.solve
+    (2023, 01, 1) -> solution AdventOfCode.Year2023.Day01.part1
     (y, d, p) -> do
       Text.hPutStrLn stderr [i|No solution for year #{y} day #{d} part #{p}|]
       exitFailure
@@ -26,7 +26,7 @@ main = do
 
 test :: IO ()
 test = Tasty.defaultMain . Tasty.testGroup "tests" $
-  [ Tasty.testGroup "2023 01 1" AdventOfCode.Year2023.Day01.Part1.tests
+  [ Tasty.testGroup "2023 01 1" AdventOfCode.Year2023.Day01.tests
   ]
 
 data Options = Options

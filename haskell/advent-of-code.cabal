@@ -57,7 +57,7 @@ library
   exposed-modules:
     , AdventOfCode
     , AdventOfCode.Optics
-    , AdventOfCode.Year2023.Day01.Part1
+    , AdventOfCode.Year2023.Day01
 
 executable advent-of-code
   import:
