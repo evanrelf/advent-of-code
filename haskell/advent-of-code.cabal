@@ -46,9 +46,12 @@ library
   hs-source-dirs: src
   build-depends:
     , bytestring
+    , hedgehog
     , optparse-applicative
     , string-interpolate
     , tasty
+    , tasty-hedgehog
+    , tasty-hunit
     , text
   exposed-modules:
     , AdventOfCode
