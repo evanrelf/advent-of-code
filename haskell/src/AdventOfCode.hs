@@ -1,5 +1,6 @@
 {-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module AdventOfCode (main, test) where
 
@@ -15,15 +16,13 @@ main :: IO ()
 main = do
   options <- getOptions
   solve <- case (options.year, options.day, options.part) of
-    (2023, 01, 1) -> s AdventOfCode.Year2023.Day01.Part1.solve
+    (2023, 01, 1) -> solution AdventOfCode.Year2023.Day01.Part1.solve
     (y, d, p) -> do
       Text.hPutStrLn stderr [i|No solution for year #{y} day #{d} part #{p}|]
       exitFailure
   inputBytes <- ByteString.getContents
   input <- either throwIO pure (decodeUtf8' inputBytes)
-  case solve input of
-    Left err -> die err
-    Right (Showable solution) -> print solution
+  either die print (solve input)
 
 test :: IO ()
 test = Tasty.defaultMain . Tasty.testGroup "tests" $
@@ -49,8 +48,26 @@ getOptions = do
   let parserInfo = info (helper <*> parseOptions) mempty
   customExecParser parserPrefs parserInfo
 
-data Showable where
-  Showable :: Show a => a -> Showable
+class Solution a where
+  solution :: Applicative f => (t -> a) -> f (t -> Either String String)
 
-s :: (Show a, Functor e, Applicative f) => (t -> e a) -> f (t -> e Showable)
-s f = pure (fmap Showable . f)
+instance {-# OVERLAPPABLE #-} Show a => Solution a where
+  solution f = pure (Right . show . f)
+
+instance {-# OVERLAPPABLE #-} Show a => Solution (Maybe a) where
+  solution f = pure (Right . show . f)
+
+instance Solution (Maybe String) where
+  solution f = pure (maybe (Left "error") Right . f)
+
+instance Solution (Maybe Text) where
+  solution f = pure (maybe (Left "error") (Right . toString) . f)
+
+instance {-# OVERLAPPABLE #-} Show a => Solution (Either String a) where
+  solution f = pure (fmap show . f)
+
+instance Solution (Either String String) where
+  solution f = pure f
+
+instance Solution (Either String Text) where
+  solution f = pure (fmap toString . f)
