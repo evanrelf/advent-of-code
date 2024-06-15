@@ -3,6 +3,8 @@
 
 module AdventOfCode (main) where
 
+import Control.Exception (throwIO)
+import Data.ByteString qualified as ByteString
 import Data.String.Interpolate (i)
 import Data.Text.IO qualified as Text
 import Options.Applicative
@@ -29,7 +31,15 @@ getOptions = do
 main :: IO ()
 main = do
   options <- getOptions
-  case (options.year, options.day, options.part) of
+  solve <- case (options.year, options.day, options.part) of
     (y, d, p) -> do
       Text.hPutStrLn stderr [i|No solution for year #{y} day #{d} part #{p}|]
       exitFailure
+  inputBytes <- ByteString.getContents
+  input <- either throwIO pure (decodeUtf8' inputBytes)
+  case solve input of
+    Left err -> die err
+    Right (Showable solution) -> print solution
+
+data Showable where
+  Showable :: Show a => a -> Showable
