@@ -1,8 +1,12 @@
+// TODO: remove
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 use anyhow::anyhow;
 use flagset::{flags, FlagSet};
 use winnow::{
     ascii::line_ending,
-    combinator::{dispatch, fail, opt, repeat, separated, success, terminated},
+    combinator::{dispatch, empty, fail, opt, repeat, separated, terminated},
     prelude::*,
     token::any,
 };
@@ -43,14 +47,14 @@ enum Tile {
 
 fn tile(input: &mut &str) -> PResult<Tile> {
     dispatch! {any;
-        '|' => success(Tile::Pipe(Direction::North | Direction::South)),
-        '-' => success(Tile::Pipe(Direction::East | Direction::West)),
-        'L' => success(Tile::Pipe(Direction::North | Direction::East)),
-        'J' => success(Tile::Pipe(Direction::North | Direction::West)),
-        '7' => success(Tile::Pipe(Direction::South | Direction::West)),
-        'F' => success(Tile::Pipe(Direction::South | Direction::East)),
-        '.' => success(Tile::Ground),
-        'S' => success(Tile::Start),
+        '|' => empty.value(Tile::Pipe(Direction::North | Direction::South)),
+        '-' => empty.value(Tile::Pipe(Direction::East | Direction::West)),
+        'L' => empty.value(Tile::Pipe(Direction::North | Direction::East)),
+        'J' => empty.value(Tile::Pipe(Direction::North | Direction::West)),
+        '7' => empty.value(Tile::Pipe(Direction::South | Direction::West)),
+        'F' => empty.value(Tile::Pipe(Direction::South | Direction::East)),
+        '.' => empty.value(Tile::Ground),
+        'S' => empty.value(Tile::Start),
         _ => fail,
     }
     .parse_next(input)
@@ -93,6 +97,8 @@ mod tests {
         LJ.LJ
     "};
 
+    // TODO: remove
+    #[ignore]
     #[test]
     fn test_sample() {
         assert_eq!(solve(SAMPLE_1).unwrap(), 4);

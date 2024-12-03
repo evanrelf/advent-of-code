@@ -10,7 +10,7 @@ use std::{
 };
 use winnow::{
     ascii::line_ending,
-    combinator::{dispatch, fail, repeat, separated, success},
+    combinator::{dispatch, empty, fail, repeat, separated},
     prelude::*,
     token::{any, one_of},
 };
@@ -112,9 +112,9 @@ impl FromStr for Network {
 
 fn network(input: &mut &str) -> PResult<Network> {
     let instructions = repeat(1.., instruction).parse_next(input)?;
-    repeat(2, line_ending).parse_next(input)?;
+    let () = repeat(2, line_ending).parse_next(input)?;
     let paths: Vec<_> = separated(1.., path, line_ending).parse_next(input)?;
-    repeat(0.., line_ending).parse_next(input)?;
+    let () = repeat(0.., line_ending).parse_next(input)?;
     let paths = paths.into_iter().fold(HashMap::new(), |mut paths, path| {
         paths.insert(path.start, (path.left, path.right));
         paths
@@ -133,8 +133,8 @@ enum Instruction {
 
 fn instruction(input: &mut &str) -> PResult<Instruction> {
     dispatch! {any;
-        'L' => success(Instruction::Left),
-        'R' => success(Instruction::Right),
+        'L' => empty.value(Instruction::Left),
+        'R' => empty.value(Instruction::Right),
         _ => fail,
     }
     .parse_next(input)

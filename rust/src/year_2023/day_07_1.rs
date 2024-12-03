@@ -3,7 +3,7 @@ use enum_iterator::Sequence;
 use std::{cmp::Ordering, collections::HashMap, iter::zip, str::FromStr};
 use winnow::{
     ascii::{digit1, line_ending},
-    combinator::{dispatch, fail, repeat, separated, separated_pair, success, terminated},
+    combinator::{dispatch, empty, fail, repeat, separated, separated_pair, terminated},
     prelude::*,
     token::any,
 };
@@ -196,19 +196,19 @@ enum Card {
 
 fn card(input: &mut &str) -> PResult<Card> {
     dispatch! {any;
-        'A' => success(Card::Ace),
-        'K' => success(Card::King),
-        'Q' => success(Card::Queen),
-        'J' => success(Card::Jack),
-        'T' => success(Card::Ten),
-        '9' => success(Card::Nine),
-        '8' => success(Card::Eight),
-        '7' => success(Card::Seven),
-        '6' => success(Card::Six),
-        '5' => success(Card::Five),
-        '4' => success(Card::Four),
-        '3' => success(Card::Three),
-        '2' => success(Card::Two),
+        'A' => empty.value(Card::Ace),
+        'K' => empty.value(Card::King),
+        'Q' => empty.value(Card::Queen),
+        'J' => empty.value(Card::Jack),
+        'T' => empty.value(Card::Ten),
+        '9' => empty.value(Card::Nine),
+        '8' => empty.value(Card::Eight),
+        '7' => empty.value(Card::Seven),
+        '6' => empty.value(Card::Six),
+        '5' => empty.value(Card::Five),
+        '4' => empty.value(Card::Four),
+        '3' => empty.value(Card::Three),
+        '2' => empty.value(Card::Two),
         _ => fail,
     }
     .parse_next(input)
