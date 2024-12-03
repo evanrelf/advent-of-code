@@ -3,6 +3,8 @@ pub(crate) use solution::aoc;
 
 #[rustfmt::skip]
 mod year_2023 { automod::dir!(pub "src/year_2023/"); }
+#[rustfmt::skip]
+mod year_2024 { automod::dir!(pub "src/year_2024/"); }
 
 use crate::solution::SOLUTIONS;
 use clap::Parser as _;

@@ -52,6 +52,7 @@ fn isize(input: &mut &str) -> PResult<isize> {
     alt((negative_usize, usize)).parse_next(input)
 }
 
+// TODO: This return type doesn't match the function name!
 fn usize(input: &mut &str) -> PResult<isize> {
     digit1.try_map(|s: &str| s.parse()).parse_next(input)
 }
